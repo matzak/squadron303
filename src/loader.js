@@ -5,6 +5,8 @@ var IGCParser = require("igc-parser");
 var glob = require("glob");
 var fs = require("fs");
 var flight_1 = require("./flight");
+var cliProgress = require('cli-progress');
+var progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 var maximumFixInteval = 1000; // 1 second
 function callsignFromFileName(file) {
     return file.split('_')[1].split('.')[0];
@@ -29,10 +31,12 @@ function loadLogs() {
     var logs = [];
     var issues = [];
     var files = glob.sync("*.igc");
+    var currentProgress = 0;
+    console.log("Loading IGC files...");
+    progressBar.start(files.length, 0);
     files.forEach(function (file) {
         var content = fs.readFileSync(file, 'utf8');
         var parser = IGCParser;
-        console.log("Trying to open file:", file);
         var rawflight;
         try {
             rawflight = parser.parse(content);
@@ -41,16 +45,12 @@ function loadLogs() {
                 flight.callsign = callsignFromFileName(file);
             }
             var issue = new LoadIssue(flight.callsign);
-            console.log("New flight loaded. Callsing: ", flight.callsign);
             if (flight.usesGPSAlt) {
                 issue.noBaroData = true;
-                console.log("No baro data, using GPS altitude.");
             }
             if (fixInterval(flight) > maximumFixInteval) {
                 issue.fixInterval = fixInterval(flight);
-                console.log("Wrong fix inteval:", fixInterval(flight));
             }
-            console.log("---");
             logs.push(flight);
             if (issue.detected()) {
                 issues.push(issue);
@@ -60,9 +60,11 @@ function loadLogs() {
             var issue = new LoadIssue(callsignFromFileName(file));
             issue.cantParse = true;
             issues.push(issue);
-            console.log("Can't parse file:", file);
         }
+        currentProgress++;
+        progressBar.update(currentProgress);
     });
+    progressBar.stop();
     return [logs, issues];
 }
 exports.loadLogs = loadLogs;

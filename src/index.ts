@@ -3,10 +3,11 @@ import { Flight } from "./flight"
 import { TaskResults, CloseCall } from "./taskResults"
 import { loadLogs } from "./loader"
 
+const cliProgress = require('cli-progress');
+const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
 const minimumDistance: number = 20
 const minimumAltDifference: number = 20
-
-
 
 function analyzeFlights(flight1: Flight, flight2: Flight) {
     flight1.fixes.forEach(fix1 => {
@@ -31,15 +32,27 @@ function detectAllEventsDuringTask() {
     // B C D
     // C D
     // D - break
+
+    let totalNumberOfOperations: number = ((logs.length * logs.length) - logs.length)/2
+    var currentProgress: number = 0
+    console.log("Searching for dangerous events...")
+    progressBar.start(totalNumberOfOperations, 0)
+
     for(var flightIdx = 0; flightIdx < logs.length; flightIdx++) {
         if (flightIdx + 1 == logs.length) {
             break
         }
         for(var againstFlightIdx = flightIdx + 1; againstFlightIdx < logs.length; againstFlightIdx++) {
             analyzeFlights(logs[flightIdx], logs[againstFlightIdx])
+            currentProgress++
+            progressBar.update(currentProgress)
         }
     }
+    progressBar.stop()
 }
+
+console.log("\n\nSquadron303 - another useless safety tool for gliding competitions.")
+console.log("https://github.com/matzak/squadron303\n")
 
 
 let loadResult = loadLogs()
@@ -50,3 +63,4 @@ let taskResults = new TaskResults()
 taskResults.reportLoadIssues(issues)
 detectAllEventsDuringTask()
 taskResults.generateHTMLReport()
+

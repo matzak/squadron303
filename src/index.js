@@ -3,6 +3,8 @@ exports.__esModule = true;
 var distanceUtils_1 = require("./distanceUtils");
 var taskResults_1 = require("./taskResults");
 var loader_1 = require("./loader");
+var cliProgress = require('cli-progress');
+var progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 var minimumDistance = 20;
 var minimumAltDifference = 20;
 function analyzeFlights(flight1, flight2) {
@@ -25,15 +27,24 @@ function detectAllEventsDuringTask() {
     // B C D
     // C D
     // D - break
+    var totalNumberOfOperations = ((logs.length * logs.length) - logs.length) / 2;
+    var currentProgress = 0;
+    console.log("Searching for dangerous events...");
+    progressBar.start(totalNumberOfOperations, 0);
     for (var flightIdx = 0; flightIdx < logs.length; flightIdx++) {
         if (flightIdx + 1 == logs.length) {
             break;
         }
         for (var againstFlightIdx = flightIdx + 1; againstFlightIdx < logs.length; againstFlightIdx++) {
             analyzeFlights(logs[flightIdx], logs[againstFlightIdx]);
+            currentProgress++;
+            progressBar.update(currentProgress);
         }
     }
+    progressBar.stop();
 }
+console.log("\n\nSquadron303 - another useless safety tool for gliding competitions.");
+console.log("https://github.com/matzak/squadron303\n");
 var loadResult = loader_1.loadLogs();
 var logs = loadResult[0];
 var issues = loadResult[1];

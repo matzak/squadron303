@@ -200,6 +200,7 @@ class TaskResults {
         const htmlReport = createHtml(issueTable, eventTable, shameTable)
 
         fs.writeFileSync("report.html",htmlReport)
+        console.log("Report saved to report.html file.")
     }
 
     private generateShameData() {

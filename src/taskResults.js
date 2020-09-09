@@ -95,7 +95,7 @@ var TaskResults = /** @class */ (function () {
             if (closeCall.glider1 == this.lastEvent.glider1 &&
                 closeCall.glider2 == this.lastEvent.glider2 &&
                 Math.abs(closeCall.timestamp - this.lastEvent.timestamp) <= eventTimeWindow) {
-                // do nothing
+                // do nothing, event should be skipped
             }
             else {
                 this.closeCalls.push(closeCall);
@@ -164,6 +164,7 @@ var TaskResults = /** @class */ (function () {
         var shameTable = createShameTable(shameRows);
         var htmlReport = createHtml(issueTable, eventTable, shameTable);
         fs.writeFileSync("report.html", htmlReport);
+        console.log("Report saved to report.html file.");
     };
     TaskResults.prototype.generateShameData = function () {
         var _this = this;

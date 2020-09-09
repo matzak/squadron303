@@ -3,6 +3,9 @@ import * as glob from "glob"
 import fs = require('fs');
 import { Flight } from "./flight"
 
+const cliProgress = require('cli-progress');
+const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
 const maximumFixInteval: number = 1000 // 1 second
 
 function callsignFromFileName(file: string): string {
@@ -33,10 +36,14 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
     let issues: LoadIssue[] = []
     let files = glob.sync("*.igc")
 
+    var currentProgress: number = 0
+
+    console.log("Loading IGC files...")
+    progressBar.start(files.length, 0)
+    
     files.forEach(file => {
         let content = fs.readFileSync(file,'utf8')
         let parser: any = IGCParser
-        console.log("Trying to open file:", file)
         let rawflight: any
         try {
             rawflight = parser.parse(content)
@@ -48,18 +55,13 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
 
             let issue = new LoadIssue(flight.callsign)
 
-            console.log("New flight loaded. Callsing: ", flight.callsign)
             if (flight.usesGPSAlt) {
                 issue.noBaroData = true
-                console.log("No baro data, using GPS altitude.")
             }
 
             if (fixInterval(flight) > maximumFixInteval) {
                 issue.fixInterval = fixInterval(flight)
-                console.log("Wrong fix inteval:", fixInterval(flight))
             }
-
-            console.log("---")
 
             logs.push(flight)
             if (issue.detected()) {
@@ -70,9 +72,13 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
             let issue = new LoadIssue(callsignFromFileName(file))
             issue.cantParse = true
             issues.push(issue)
-            console.log("Can't parse file:", file)
         }
+
+        currentProgress++
+        progressBar.update(currentProgress)
     });
+
+    progressBar.stop()
 
     return [logs, issues]
 }
