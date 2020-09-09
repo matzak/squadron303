@@ -1,31 +1,12 @@
-
-import * as IGCParser from "igc-parser"
-import fs = require('fs');
 import { getDistanceBetweenPoints } from "./distanceUtils"
-import * as glob from "glob"
 import { Flight } from "./flight"
 import { TaskResults, CloseCall } from "./taskResults"
+import { loadLogs } from "./loader"
 
 const minimumDistance: number = 20
 const minimumAltDifference: number = 20
 
-function loadLogs(): Flight[] {
-    let result: Flight[] = []
-    let files = glob.sync("*.igc")
 
-    files.forEach(file => {
-        let content = fs.readFileSync(file,'utf8')
-        let parser: any = IGCParser
-        console.log("Trying to open file:", file)
-        let rawflight = parser.parse(content)
-        let flight = new Flight(rawflight)
-
-        console.log("New flight loaded. Callsing: ", flight.callsign, flight.usesGPSAlt ? "- no baro data, using GPS altitude." : "")
-        result.push(flight)
-    });
-
-    return result
-}
 
 function analyzeFlights(flight1: Flight, flight2: Flight) {
     console.log(flight1.callsign, " vs ", flight2.callsign)

@@ -83,7 +83,7 @@ var TaskResults = /** @class */ (function () {
         if (this.lastEvent != undefined) {
             if (closeCall.glider1 == this.lastEvent.glider1 &&
                 closeCall.glider2 == this.lastEvent.glider2 &&
-                closeCall.timestamp - this.lastEvent.timestamp <= eventTimeWindow) {
+                Math.abs(closeCall.timestamp - this.lastEvent.timestamp) <= eventTimeWindow) {
                 console.log("Event will be skipped due to:", this.lastEvent);
             }
             else {
@@ -115,14 +115,9 @@ var TaskResults = /** @class */ (function () {
             });
         };
         this.closeCalls.forEach(function (closeCall) {
-            var glider1Score = results.get(closeCall.glider1);
-            var glider2Score = results.get(closeCall.glider2);
-            if (glider1Score == undefined) {
-                glider1Score = 0;
-            }
-            if (glider2Score == undefined) {
-                glider2Score = 0;
-            }
+            var _a, _b;
+            var glider1Score = (_a = results.get(closeCall.glider1)) !== null && _a !== void 0 ? _a : 0;
+            var glider2Score = (_b = results.get(closeCall.glider2)) !== null && _b !== void 0 ? _b : 0;
             results.set(closeCall.glider1, glider1Score + 1);
             results.set(closeCall.glider2, glider2Score + 1);
         });

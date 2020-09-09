@@ -1,27 +1,10 @@
 "use strict";
 exports.__esModule = true;
-var IGCParser = require("igc-parser");
-var fs = require("fs");
 var distanceUtils_1 = require("./distanceUtils");
-var glob = require("glob");
-var flight_1 = require("./flight");
 var taskResults_1 = require("./taskResults");
+var loader_1 = require("./loader");
 var minimumDistance = 20;
 var minimumAltDifference = 20;
-function loadLogs() {
-    var result = [];
-    var files = glob.sync("*.igc");
-    files.forEach(function (file) {
-        var content = fs.readFileSync(file, 'utf8');
-        var parser = IGCParser;
-        console.log("Trying to open file:", file);
-        var rawflight = parser.parse(content);
-        var flight = new flight_1.Flight(rawflight);
-        console.log("New flight loaded. Callsing: ", flight.callsign, flight.usesGPSAlt ? "- no baro data, using GPS altitude." : "");
-        result.push(flight);
-    });
-    return result;
-}
 function analyzeFlights(flight1, flight2) {
     console.log(flight1.callsign, " vs ", flight2.callsign);
     flight1.fixes.forEach(function (fix1) {
@@ -52,7 +35,7 @@ function detectAllEventsDuringTask() {
         }
     }
 }
-var logs = loadLogs();
+var logs = loader_1.loadLogs();
 var taskResults = new taskResults_1.TaskResults();
 detectAllEventsDuringTask();
 taskResults.eventsToConsole();
