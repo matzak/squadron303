@@ -9,7 +9,6 @@ const minimumAltDifference: number = 20
 
 
 function analyzeFlights(flight1: Flight, flight2: Flight) {
-    console.log(flight1.callsign, " vs ", flight2.callsign)
     flight1.fixes.forEach(fix1 => {
 
         let fix2 = flight2.fixes.find(function(fix) {
@@ -43,10 +42,11 @@ function detectAllEventsDuringTask() {
 }
 
 
-
-let logs = loadLogs();
+let loadResult = loadLogs()
+let logs = loadResult[0]
+let issues = loadResult[1]
 let taskResults = new TaskResults() 
 
+taskResults.reportLoadIssues(issues)
 detectAllEventsDuringTask()
-taskResults.eventsToConsole()
-taskResults.hallOfShameToConsole()
+taskResults.generateHTMLReport()

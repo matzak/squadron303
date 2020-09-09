@@ -6,7 +6,6 @@ var loader_1 = require("./loader");
 var minimumDistance = 20;
 var minimumAltDifference = 20;
 function analyzeFlights(flight1, flight2) {
-    console.log(flight1.callsign, " vs ", flight2.callsign);
     flight1.fixes.forEach(function (fix1) {
         var fix2 = flight2.fixes.find(function (fix) {
             return fix1.timestamp == fix.timestamp;
@@ -35,8 +34,10 @@ function detectAllEventsDuringTask() {
         }
     }
 }
-var logs = loader_1.loadLogs();
+var loadResult = loader_1.loadLogs();
+var logs = loadResult[0];
+var issues = loadResult[1];
 var taskResults = new taskResults_1.TaskResults();
+taskResults.reportLoadIssues(issues);
 detectAllEventsDuringTask();
-taskResults.eventsToConsole();
-taskResults.hallOfShameToConsole();
+taskResults.generateHTMLReport();
