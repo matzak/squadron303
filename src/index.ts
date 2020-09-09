@@ -19,7 +19,10 @@ function analyzeFlights(flight1: Flight, flight2: Flight) {
         if (fix2 != undefined) {
             let distance = getDistanceBetweenPoints(fix1.latitude, fix1.longitude, fix2.latitude, fix2.longitude)
             let altDifference = Math.abs(fix1.altitude - fix2.altitude)
-            if (distance < minimumDistance && altDifference < minimumAltDifference) {
+            if (distance < minimumDistance && 
+                altDifference < minimumAltDifference &&
+                fix1.timestamp > flight1.takeoffAt &&
+                fix2.timestamp > flight2.takeoffAt) {
                 let closeCall = new CloseCall(flight1.callsign, flight2.callsign, fix1.time, distance, altDifference, fix1.timestamp)
                 taskResults.reportEvent(closeCall)
             }
