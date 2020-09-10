@@ -12,6 +12,10 @@ function callsignFromFileName(file: string): string {
     return file.split('_')[1].split('.')[0]
 }
 
+function taskFromFileName(file: string): string {
+    return file.split('_')[0]
+}
+
 function fixInterval(flight: Flight): number {
     return flight.fixes[1].timestamp - flight.fixes[0].timestamp
 }
@@ -21,6 +25,7 @@ class LoadIssue {
     noBaroData: boolean = false
     fixInterval: number = 0
     cantParse: boolean = false
+    task: string = ""
 
     detected(): boolean {
         return this.noBaroData || this.cantParse || this.fixInterval > 0
@@ -47,13 +52,14 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
         let rawflight: any
         try {
             rawflight = parser.parse(content)
-            let flight = new Flight(rawflight)
+            let flight = new Flight(rawflight, taskFromFileName(file))
 
             if(flight.callsign == undefined || flight.callsign.length == 0 ) {
                 flight.callsign = callsignFromFileName(file)
             }
 
             let issue = new LoadIssue(flight.callsign)
+            issue.task = flight.task
 
             if (flight.usesGPSAlt) {
                 issue.noBaroData = true
@@ -70,6 +76,7 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
         }
         catch {
             let issue = new LoadIssue(callsignFromFileName(file))
+            issue.task = taskFromFileName(file)
             issue.cantParse = true
             issues.push(issue)
         }

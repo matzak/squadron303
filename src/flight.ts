@@ -1,6 +1,6 @@
 import { getDistanceBetweenPoints } from "./distanceUtils"
 
-const takeoffAltitude: number = 50
+const takeoffAltitude: number = 100
 
 class FlightFix {
     latitude: number
@@ -23,14 +23,15 @@ class Flight {
     fixes: FlightFix[] = []
     usesGPSAlt: boolean
     takeoffAt: number = 0
+    task: string
 
-    constructor(rawFile: any) {
+    constructor(rawFile: any, task: string) {
         this.callsign = rawFile.callsign
         rawFile.fixes.forEach((fix: any) => {
             this.fixes.push(new FlightFix(fix))
         });
         this.usesGPSAlt = (rawFile.fixes[0].pressureAltitude == null)
-
+        this.task = task
         for (let fix of this.fixes) {
             if (fix.altitude > this.fixes[0].altitude + takeoffAltitude) {
                 this.takeoffAt = fix.timestamp

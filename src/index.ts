@@ -10,6 +10,12 @@ const minimumDistance: number = 20
 const minimumAltDifference: number = 20
 
 function analyzeFlights(flight1: Flight, flight2: Flight) {
+
+    if (flight1.task != flight2.task) {
+        // Don't campare fixes between different competition days.
+        return
+    }
+
     flight1.fixes.forEach(fix1 => {
 
         let fix2 = flight2.fixes.find(function(fix) {
@@ -23,7 +29,7 @@ function analyzeFlights(flight1: Flight, flight2: Flight) {
                 altDifference < minimumAltDifference &&
                 fix1.timestamp > flight1.takeoffAt &&
                 fix2.timestamp > flight2.takeoffAt) {
-                let closeCall = new CloseCall(flight1.callsign, flight2.callsign, fix1.time, distance, altDifference, fix1.timestamp)
+                let closeCall = new CloseCall(flight1.callsign, flight2.callsign, fix1.time, distance, altDifference, fix1.timestamp, flight1.task)
                 taskResults.reportEvent(closeCall)
             }
         }
