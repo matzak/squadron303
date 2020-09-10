@@ -2,6 +2,7 @@ import * as IGCParser from "igc-parser"
 import * as glob from "glob"
 import fs = require('fs');
 import { Flight } from "./flight"
+import { Config } from "./config"
 
 const cliProgress = require('cli-progress');
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -40,6 +41,10 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
     let logs: Flight[] = []
     let issues: LoadIssue[] = []
     let files = glob.sync("*.igc")
+    let config = new Config()
+
+    console.log("Loaded configuration file:")
+    console.log(config)
 
     var currentProgress: number = 0
 
@@ -57,6 +62,12 @@ export function loadLogs(): [Flight[], LoadIssue[]] {
             if(flight.callsign == undefined || flight.callsign.length == 0 ) {
                 flight.callsign = callsignFromFileName(file)
             }
+
+            config.teams.forEach(team => {
+                if(team.includes(flight.callsign)) {
+                    flight.team = team
+                }
+            });
 
             let issue = new LoadIssue(flight.callsign)
             issue.task = flight.task

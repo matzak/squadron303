@@ -36,6 +36,11 @@ class Detector {
             // Don't campare fixes between different competition days.
             return
         }
+
+        if (flight1.team.includes(flight2.callsign)) {
+            // Skipping team members
+            return
+        }
     
         flight1.fixes.forEach(fix1 => {
     

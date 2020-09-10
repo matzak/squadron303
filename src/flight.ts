@@ -24,6 +24,7 @@ class Flight {
     usesGPSAlt: boolean
     takeoffAt: number = 0
     task: string
+    team: string[] = []
 
     constructor(rawFile: any, task: string) {
         this.callsign = rawFile.callsign
