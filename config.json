@@ -1,3 +1,4 @@
 {
+    "minimumTimeIntervalBetweenEvents" : 5,
     "teams":[["BI", "BZ"],["M2", "PK"]]
 }

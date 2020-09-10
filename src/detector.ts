@@ -1,6 +1,6 @@
 import { getDistanceBetweenPoints } from "./distanceUtils"
 import { Flight } from "./flight"
-import { TaskResults } from "./taskResults"
+import { Report } from "./report"
 
 
 const minimumDistance: number = 20
@@ -28,7 +28,7 @@ class CloseCall {
 
 class Detector {
 
-    taskResults: TaskResults
+    report: Report
 
     analyzeFlights(flight1: Flight, flight2: Flight) {
 
@@ -56,14 +56,14 @@ class Detector {
                     fix1.timestamp > flight1.takeoffAt &&
                     fix2.timestamp > flight2.takeoffAt) {
                     let closeCall = new CloseCall(flight1.callsign, flight2.callsign, fix1.time, distance, altDifference, fix1.timestamp, flight1.task)
-                    this.taskResults.reportEvent(closeCall)
+                    this.report.reportEvent(closeCall)
                 }
             }
         });
     }
 
-    constructor(taskResults: TaskResults) {
-        this.taskResults = taskResults
+    constructor(taskResults: Report) {
+        this.report = taskResults
     }
 }
 

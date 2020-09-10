@@ -1,12 +1,12 @@
 import { Detector } from "./detector"
-import { TaskResults } from "./taskResults"
+import { Report } from "./report"
 import { loadLogs } from "./loader"
 
 const cliProgress = require('cli-progress');
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-const taskResults = new TaskResults() 
-const detector = new Detector(taskResults)
+const report = new Report() 
+const detector = new Detector(report)
 
 function detectAllEventsDuringTask() {
     // A B C D
@@ -40,7 +40,7 @@ let loadResult = loadLogs()
 let logs = loadResult[0]
 let issues = loadResult[1]
 
-taskResults.reportLoadIssues(issues)
+report.reportLoadIssues(issues)
 detectAllEventsDuringTask()
-taskResults.generateHTMLReport()
+report.generateHTMLReport()
 

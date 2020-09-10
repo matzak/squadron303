@@ -3,10 +3,11 @@ import { CloseCall} from "./detector"
 import { LoadIssue } from "./loader"
 import { HTMLReport } from "./htmlReport" 
 import fs = require('fs');
+import { Config } from "./config";
 
-const eventTimeWindow: number  = 5000 // 5 seconds
+const eventTimeWindow: number  = new Config().minimumTimeIntervalBetweenEvents * 1000
 
-class TaskResults {
+class Report {
     private loadIssues?: LoadIssue[]
     private closeCalls: CloseCall[] = []
     private lastEvent?: CloseCall = undefined
@@ -102,4 +103,4 @@ class TaskResults {
     }
 }
 
-export { TaskResults }
+export { Report }
