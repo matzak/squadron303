@@ -1,8 +1,13 @@
-import { LoadIssue } from "./loader"
-import { CloseCall} from "./detector"
+import { LoadIssue } from "./loader";
+import { CloseCall } from "./detector";
 
 class HTMLReport {
-    static createHtml = (issuesTable: string, eventsTable: string, shameTable: string, numberOfEvents: number) => `
+  static createHtml = (
+    issuesTable: string,
+    eventsTable: string,
+    shameTable: string,
+    numberOfEvents: number
+  ) => `
   <html>
     <head>
       <style>
@@ -44,17 +49,19 @@ class HTMLReport {
   </html>
 `;
 
-    static createIssueRow = (item: LoadIssue) => `
+  static createIssueRow = (item: LoadIssue) => `
   <tr>
     <td>${item.callsign}</td>
     <td>${item.cantParse ? "<center>X</center>" : ""}</td>
     <td>${item.noBaroData ? "<center>X</center>" : ""}</td>
-    <td><center>${item.fixInterval > 0 ? item.fixInterval/1000 : ""}</center></td>
+    <td><center>${
+      item.fixInterval > 0 ? item.fixInterval / 1000 : ""
+    }</center></td>
     <td>${item.task}</td>
   </tr>
 `;
 
-    static createIssueTable = (rows: string) => `
+  static createIssueTable = (rows: string) => `
   <table>
     <tr>
         <th>CN</td>
@@ -67,7 +74,7 @@ class HTMLReport {
   </table>
 `;
 
-    static createEventRow = (item: CloseCall) => `
+  static createEventRow = (item: CloseCall) => `
   <tr>
     <td>${item.glider1}</td>
     <td>${item.glider2}</td>
@@ -78,7 +85,7 @@ class HTMLReport {
   </tr>
 `;
 
-    static createEventsTable = (rows: string) => `
+  static createEventsTable = (rows: string) => `
   <table>
     <tr>
         <th>CN #1</td>
@@ -92,7 +99,7 @@ class HTMLReport {
   </table>
 `;
 
-    static createShameRow = (item: [number, string, number]) => `
+  static createShameRow = (item: [number, string, number]) => `
   <tr>
     <td>${item[0]}</td>
     <td>${item[1]}</td>
@@ -100,7 +107,7 @@ class HTMLReport {
   </tr>
 `;
 
-    static createShameTable = (rows: string) => `
+  static createShameTable = (rows: string) => `
   <table>
     <tr>
         <th>#</td>
@@ -112,4 +119,4 @@ class HTMLReport {
 `;
 }
 
-export { HTMLReport }
+export { HTMLReport };
